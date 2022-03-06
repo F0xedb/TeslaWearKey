@@ -2,6 +2,7 @@ package li.power.app.wearos.odextesla;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -19,6 +20,10 @@ import android.os.PowerManager;
 import androidx.annotation.RequiresApi;
 import androidx.wear.widget.ConfirmationOverlay;
 import androidx.wear.widget.drawer.WearableNavigationDrawerView;
+
+
+// Import DialogInterface
+
 
 import li.power.app.wearos.odextesla.databinding.ActivityMainBinding;
 import org.apache.commons.codec.binary.Hex;
@@ -44,6 +49,8 @@ public class MainActivity extends Activity {
 
     private KeyStore keyStore;
     private SharedPreferences sharedPreferences;
+
+    private String license_string;
 
 
     @Override
@@ -91,32 +98,34 @@ public class MainActivity extends Activity {
                 showAbout();
             }
         });
+
+        license_string = loadLicense();
     }
 
-    private String license_string;
-
-    private void loadLicenseText(View layout) {
-        TextView text = layout.findViewById(R.id.license);
-
-        if(license_string) {
-            text.setText(license_string);
-            return;
-        }
-
+    private String loadLicense() {
         try {
             Resources res = getResources();
             InputStream in_s = res.openRawResource(R.raw.license);
             byte[] b = new byte[in_s.available()];
             in_s.read(b);
-            license_string = new String(b)
-            text.setText(license_string);
+            return new String(b);
         } catch (Exception e) {
-            license_string = "Error: can't show License."
-            text.setText(license_string);
+            return"Error: can't show License.";
         }
     }
 
+    private void loadLicenseText(View layout) {
+        TextView text = layout.findViewById(R.id.license);
+        text.setText(license_string);
+    }
+
+    private boolean bIsShowingDialog = false;
+
     private void showAbout() {
+            if (bIsShowingDialog) return;
+
+            bIsShowingDialog = true;
+
             Dialog dialog = new Dialog(this);
             View myLayout = getLayoutInflater().inflate(R.layout.about, null);
 
@@ -124,6 +133,14 @@ public class MainActivity extends Activity {
 
             dialog.setContentView(myLayout);
             dialog.show();
+
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    dialog.dismiss();
+                    bIsShowingDialog = false;
+                }
+            });
     }
 
 
