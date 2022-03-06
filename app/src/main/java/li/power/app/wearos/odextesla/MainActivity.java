@@ -1,20 +1,32 @@
-package li.power.app.wearos.teslanak;
+package li.power.app.wearos.odextesla;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.os.PowerManager;
 import androidx.annotation.RequiresApi;
-import li.power.app.wearos.teslanak.databinding.ActivityMainBinding;
+import androidx.wear.widget.ConfirmationOverlay;
+import androidx.wear.widget.drawer.WearableNavigationDrawerView;
+
+import li.power.app.wearos.odextesla.databinding.ActivityMainBinding;
 import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.*;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.spec.ECGenParameterSpec;
@@ -23,6 +35,7 @@ public class MainActivity extends Activity {
 
     private TextView mTextView;
     private ActivityMainBinding binding;
+    private ImageButton about_button;
 
     private static final String KEYSTORE_PROVIDER = "AndroidKeyStore";
     private static final String KEY_ALIAS = "tesla_nak";
@@ -42,6 +55,7 @@ public class MainActivity extends Activity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         mTextView = binding.text;
+        about_button = binding.button;
 
         try {
             keyStore = KeyStore.getInstance(KEYSTORE_PROVIDER);
@@ -56,7 +70,51 @@ public class MainActivity extends Activity {
             mTextView.setText("Failed to generate keypair.");
             e.printStackTrace();
         }
-        mTextView.setText("Tesla Key Card is ready to use.");
+        mTextView.setText("Tesla Wear Key is ready to use.");
+
+        PowerManager powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+
+        if (powerManager.isPowerSaveMode()) {
+            mTextView.setText("Power save mode is on, unlocking the car won't work.");
+            return;
+        }
+
+        String[] text = {"Tesla Wear Key is ready to use.", "Touch the wearable against the door pillar to unlock the vehicle."};
+        setUpFadeAnimation(mTextView, text);
+
+        // TODO: Change between the 2 different text modes when power save get's changed
+        // The android intend that notifies this is: ACTION_POWER_SAVE_MODE_CHANGED
+
+        about_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAbout();
+            }
+        });
+    }
+
+    private void loadLicenseText(View layout) {
+        TextView text = layout.findViewById(R.id.license);
+
+        try {
+            Resources res = getResources();
+            InputStream in_s = res.openRawResource(R.raw.license);
+            byte[] b = new byte[in_s.available()];
+            in_s.read(b);
+            text.setText(new String(b));
+        } catch (Exception e) {
+            text.setText("Error: can't show License.");
+        }
+    }
+
+    private void showAbout() {
+            Dialog dialog = new Dialog(this);
+            View myLayout = getLayoutInflater().inflate(R.layout.about, null);
+
+            loadLicenseText(myLayout);
+
+            dialog.setContentView(myLayout);
+            dialog.show();
     }
 
 
@@ -92,5 +150,53 @@ public class MainActivity extends Activity {
         keyPairGenerator.generateKeyPair();
     }
 
+    private void setUpFadeAnimation(final TextView textView, final String[] text) {
+        final Animation fadeIn = new AlphaAnimation(0.0f, 1.0f);
+        fadeIn.setDuration(1500);
+        fadeIn.setStartOffset(0);
 
+        final Animation fadeOut = new AlphaAnimation(1.0f, 0.0f);
+        fadeOut.setDuration(1500);
+        fadeOut.setStartOffset(5000);
+
+        fadeIn.setAnimationListener(new Animation.AnimationListener(){
+            int current_index = 0;
+
+            @Override
+            public void onAnimationEnd(Animation arg0) {
+                // start fadeOut when fadeIn ends (continue)
+                textView.startAnimation(fadeOut);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation arg0) {
+            }
+
+            @Override
+            public void onAnimationStart(Animation arg0) {
+                current_index = (current_index + 1) % text.length;
+                textView.setText(text[current_index]);
+            }
+        });
+
+        fadeOut.setAnimationListener(new Animation.AnimationListener() {
+
+            @Override
+            public void onAnimationEnd(Animation arg0) {
+                // start fadeIn when fadeOut ends (repeat)
+                textView.startAnimation(fadeIn);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationStart(Animation arg0) {
+            }
+        });
+
+	textView.startAnimation(fadeOut);
+    }
 }

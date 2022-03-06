@@ -1,11 +1,11 @@
-package li.power.app.wearos.teslanak.nfc;
+package li.power.app.wearos.odextesla.nfc;
 
 import android.content.SharedPreferences;
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-import li.power.app.wearos.teslanak.MainActivity;
+import li.power.app.wearos.odextesla.MainActivity;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

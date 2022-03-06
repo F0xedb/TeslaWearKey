@@ -1,25 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.wear.widget.BoxInsetLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         tools:context=".MainActivity"
         tools:deviceIds="wear"
-        android:padding="@dimen/box_inset_layout_padding">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/inner_frame_layout_padding"
+        android:paddingLeft="@dimen/inner_frame_layout_padding"
+        android:paddingRight="@dimen/inner_frame_layout_padding"
+        app:layout_boxedEdges="all"
+        android:fillViewport="true"
+        android:id="@+id/frameLayout">
 
-    <FrameLayout
+    <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/unlock"
+            android:contentDescription="@string/unlock_desc"
+            android:id="@+id/imageView"
+            android:layout_gravity="top|center_horizontal"
+            android:foregroundGravity="top"
+            android:paddingTop="@dimen/margins" />
+
+    <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hello_world"
+            android:layout_marginTop="@dimen/margins"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:foregroundGravity="center"
+            android:gravity="center"
+            android:paddingLeft="@dimen/margins"
+            android:paddingRight="@dimen/margins" />
+
+    <ImageButton
+            android:id="@+id/button"
+            android:src="@drawable/about_btn"
+            android:layout_gravity="bottom"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_height="35dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/inner_frame_layout_padding"
-            app:layout_boxedEdges="all">
-
-        <TextView
-                android:id="@+id/text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/hello_world"/>
-
-    </FrameLayout>
-</androidx.wear.widget.BoxInsetLayout>
+            android:contentDescription="@string/about_button"
+            android:background="@android:color/holo_blue_dark"
+            android:fitsSystemWindows="true" />
+</FrameLayout>

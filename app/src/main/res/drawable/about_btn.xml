@@ -1,0 +1,5 @@
+<inset
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:drawable="@drawable/outline_info_24"
+        android:insetTop="0dp"
+        android:insetBottom="0dp" />

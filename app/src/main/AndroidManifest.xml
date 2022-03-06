@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="li.power.app.wearos.teslanak">
+          package="li.power.app.wearos.odextesla">
 
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
@@ -45,7 +45,7 @@
         </activity>
 
         <service
-                android:name="li.power.app.wearos.teslanak.nfc.TeslaNAKService"
+                android:name="li.power.app.wearos.odextesla.nfc.TeslaNAKService"
                 android:exported="true"
                 android:permission="android.permission.BIND_NFC_SERVICE">
             <intent-filter>

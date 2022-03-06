@@ -1,8 +1,10 @@
-TeslaWearKey
+Tesla Wear Fob
 ===
 
 An app for Android Wear that allows you to wear a watch to unlock your Tesla Model 3.
 Based on HCE, the watch emulates as Tesla Key Card to interact with the vehicle.
+
+This is a fork of [TeslaWearFob](https://github.com/pccr10001/TeslaWearKey) with a better User Interface
 
 ---
 ### Features
@@ -10,6 +12,8 @@ Based on HCE, the watch emulates as Tesla Key Card to interact with the vehicle.
 * Android KeyStore protected keys
 * No internet access required
 * Based on Tesla Key Card protocol
+* Notify to disable Battery Saver
+* Clean UI telling you how to use it
 
 ### Dependencies
 * NFC-enabled WearOS watch
