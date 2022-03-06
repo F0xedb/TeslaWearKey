@@ -93,17 +93,26 @@ public class MainActivity extends Activity {
         });
     }
 
+    private String license_string;
+
     private void loadLicenseText(View layout) {
         TextView text = layout.findViewById(R.id.license);
+
+        if(license_string) {
+            text.setText(license_string);
+            return;
+        }
 
         try {
             Resources res = getResources();
             InputStream in_s = res.openRawResource(R.raw.license);
             byte[] b = new byte[in_s.available()];
             in_s.read(b);
-            text.setText(new String(b));
+            license_string = new String(b)
+            text.setText(license_string);
         } catch (Exception e) {
-            text.setText("Error: can't show License.");
+            license_string = "Error: can't show License."
+            text.setText(license_string);
         }
     }
 
